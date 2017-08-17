@@ -7,6 +7,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.json.*;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -77,14 +78,31 @@ public class HomeController {
                 //turn the string into an actual JSON object
                 JSONObject json = new JSONObject(jsonString);
 
+
                 //get the response code and some info from JSON
                 int status = resp.getStatusLine().getStatusCode();
                 String prodCenter = json.get("productionCenter").toString();
 
+                //create JSON data
+                JSONArray days = json.getJSONObject("time").getJSONArray("startPeriodName");
+                JSONArray temps = json.getJSONObject("data").getJSONArray("temperature");
+
+
                 //put into web application (ModelAndView)
                 ModelAndView mv = new ModelAndView("weather");
                 mv.addObject("status", status);
-                mv.addObject("prodCenter",prodCenter);
+                mv.addObject("prodCenter", prodCenter);
+                mv.addObject("day1", days.getString(0));
+                mv.addObject("day2", days.getString(1));
+                mv.addObject("day3", days.getString(2));
+                mv.addObject("day4", days.getString(3));
+                mv.addObject("day5", days.getString(4));
+
+                mv.addObject("temp1", temps.getString(0));
+                mv.addObject("temp2", temps.getString(1));
+                mv.addObject("temp3", temps.getString(2));
+                mv.addObject("temp4", temps.getString(3));
+                mv.addObject("temp5", temps.getString(4));
 
                 return mv;
             }
@@ -100,4 +118,5 @@ public class HomeController {
         //cue to read the log during debugging process, make the null into a user friendly message
         return null;
         }
+
     }
